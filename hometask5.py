@@ -47,3 +47,58 @@ def Task3():
     numbers_set = set(numbers)
     print(f"В исходной последовательности элеменов совпадает: {total_matches}.\nУникальные элементы: {numbers_set}")
 Task3()
+
+# Задача 4*. (Необязательная). Создайте игру в крестики-нолики.
+print("\nЗадача 4:")
+def print_board(board):
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 9)
+
+def is_valid_move(board, row, col):
+    return board[row][col] == " "
+
+def check_winner(board, symbol):
+    for row in board:
+        if all([s == symbol for s in row]):
+            return True
+    for col in range(3):
+        if all([board[row][col] == symbol for row in range(3)]):
+            return True
+    if all([board[i][i] == symbol for i in range(3)]) or all([board[i][2 - i] == symbol for i in range(3)]):
+        return True
+    return False
+
+def make_move(board, row, col, symbol):
+    board[row][col] = symbol
+
+def game():
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    player = "X"
+
+    while True:
+        print_board(board)
+        try:
+            row, col = map(int, input(f"Игрок {player}, сделайте ход (ряд, столбец): ").split())
+        except ValueError:
+            print("Неверный ввод. Введите ряд и столбец, разделенные пробелом.")
+            continue
+        if not (0 <= row < 3 and 0 <= col < 3) or not is_valid_move(board, row, col):
+            print("Неверный ход. Попробуйте ещё раз.")
+            continue
+
+        make_move(board, row, col, player)
+
+        if check_winner(board, player):
+            print_board(board)
+            print(f"Игрок {player} выиграл!")
+            break
+
+        if all([not is_valid_move(board, row, col) for row in range(3) for col in range(3)]):
+            print_board(board)
+            print("Ничья!")
+            break
+
+        player = "O" if player == "X" else "X"
+
+game()
